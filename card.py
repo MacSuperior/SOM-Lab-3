@@ -1,6 +1,6 @@
-from payment import Payment, abstractmethod
+from abc import ABC, abstractmethod
 
-class Card(Payment):
+class Card(ABC):
 
     @abstractmethod
     def connect(self):
@@ -21,9 +21,3 @@ class Card(Payment):
     @abstractmethod
     def cancel_transaction(self, id: int):
         pass
-
-    def handle_payment(self, price: int):
-        self.connect()
-        id: int = self.begin_transaction(round(price, 2))
-        self.end_transaction(id)
-        self.disconnect()

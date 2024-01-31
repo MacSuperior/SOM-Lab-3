@@ -3,6 +3,7 @@ from tkinter import messagebox
 
 # Mock CreditCard implementation
 class CreditCard(Card):
+    fee = 0.50
 
     def connect(self):
         messagebox.showinfo(message = "Connecting to credit card reader")
@@ -26,7 +27,3 @@ class CreditCard(Card):
             raise Exception ("Incorrect transaction id")
 
         messagebox.showinfo(message = "Cancel transaction 1")
-    
-    def handle_payment(self, price: int):
-        price += 0.5
-        return super().handle_payment(price)

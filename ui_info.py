@@ -9,9 +9,9 @@ class UIWay(IntEnum):
 	Return = 2
 
 class UIDiscount(IntEnum):
-	NoDiscount = 1
-	TwentyDiscount = 2
-	FortyDiscount = 3
+	NoDiscount = 0
+	TwentyDiscount = 20
+	FortyDiscount = 40
 
 class UIPayment(IntEnum):
 	DebitCard = 1

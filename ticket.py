@@ -1,12 +1,17 @@
-from datetime import datetime as dt
-
-class Ticket():
-    def __init__(ticket_type: str, journey_type: str, ticket_amount: int, dep_station: str, dest_station: str, price: float, date: dt, self):
-        self.ticket_type = ticket_type
+class Ticket:
+    """Stores ticket information"""
+    def __init__(self,
+                 origin,
+                 destination,
+                 travel_class,
+                 journey_type,
+                 valid_date,
+                 price,
+                 discount) -> None:
+        self.origin = origin
+        self.destination = destination
+        self.travel_class = travel_class
         self.journey_type = journey_type
-        self.ticket_amount = ticket_amount
-        self.dep_station = dep_station
-        self.dest_station = dest_station
+        self.valid_date = valid_date # tuple with two dates
         self.price = price
-        self.date = date
-
+        self.discount = discount
