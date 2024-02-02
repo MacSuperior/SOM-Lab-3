@@ -18,18 +18,3 @@ class UIPayment(IntEnum):
 	CreditCard = 2
 	Cash= 3
 
-class UIInfo:
-	from_station: str = ""
-	to_station: str = ""
-	travel_class: UIClass = UIClass.SecondClass
-	way: UIWay = UIWay.OneWay
-	discount: UIDiscount.NoDiscount
-	payment: UIPayment.Cash
-
-	def __init__(self, from_station: str, to_station: str, travel_class: UIClass, way: UIWay, discount: UIDiscount, payment: UIPayment):
-		self.from_station = from_station
-		self.to_station = to_station
-		self.travel_class = travel_class
-		self.way = way
-		self.discount = discount
-		self.payment = payment

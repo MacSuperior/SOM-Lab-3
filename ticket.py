@@ -17,7 +17,7 @@ class Ticket:
         self.destination = destination
         self.travel_class = travel_class
         self.journey_type = journey_type
-        self.valid_date = valid_date # tuple with two dates
+        self.valid_date = valid_date
         self.price = price
         self.discount = discount
 
@@ -26,5 +26,3 @@ class Ticket:
         
         if self.journey_type == UIWay.Return or use_different_date is False:
             self.valid_date = datetime.today().strftime("%Y/%m/%d")
-        
-        print(str(vars(self)))
