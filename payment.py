@@ -10,14 +10,16 @@ class Payment:
 
 
     def pay(self):
-        if self.payment_method == UIPayment.CreditCard:
+        if self.total_price == 0.0:
+            return
+        if self.payment_method == UIPayment.credit_card:
             self.total_price += CreditCard.fee
             self._pay_by_creditcard()
         
-        elif self.payment_method == UIPayment.DebitCard:
+        elif self.payment_method == UIPayment.debit_card:
             self._pay_by_debitcard()
 
-        elif self.payment_method == UIPayment.Cash:
+        elif self.payment_method == UIPayment.cash:
             self._pay_by_cash()
     
 

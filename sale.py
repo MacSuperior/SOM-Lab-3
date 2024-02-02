@@ -13,9 +13,14 @@ class Sale:
         p.pay()
 
     def add_ticket_to_total(self, ticket: Ticket):
+        self.tickets.append(ticket)
         self.total_price += ticket.price
         self.total_price = round(self.total_price, 2)
-        self.tickets.append(ticket)
+    
+    def delete_ticket_from_total(self, ticket: Ticket):
+        self.tickets.remove(ticket)
+        self.total_price -= ticket.price
+        self.total_price = round(self.total_price, 2)
     
     def create_ticket(self):
         return Ticket(origin=self.view.from_station.get(),

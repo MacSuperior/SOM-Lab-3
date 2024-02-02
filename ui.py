@@ -2,7 +2,7 @@ import tkinter as tk
 from sale import Sale
 from ticket import Ticket
 from tariefeenheden import Tariefeenheden
-from ui_info import UIPayment, UIClass, UIWay, UIDiscount, UIPayment, UIInfo
+from ui_info import UIPayment, UIClass, UIWay, UIDiscount, UIPayment
 
 class UI(tk.Frame):
 
@@ -10,6 +10,7 @@ class UI(tk.Frame):
 		tk.Frame.__init__(self, master)
 		self.sale = Sale(self)
 		self.widgets()
+		self.update_checkbox()
 
 	def widgets(self):
 		self.master.title("Ticket machine")
@@ -37,53 +38,60 @@ class UI(tk.Frame):
 		ticket_options_frame.pack(fill=tk.BOTH, expand=False, padx=10, pady=10)
 
 		tk.Label(ticket_options_frame, text="Travel class:").grid(row=0, column=0, padx=5, sticky=tk.W)
-		self.travel_class = tk.IntVar(value=UIClass.SecondClass.value)
-		tk.Radiobutton(ticket_options_frame, text="First class", variable=self.travel_class, value=UIClass.FirstClass.value).grid(row=0, column=1, padx=5, sticky=tk.W)
-		tk.Radiobutton(ticket_options_frame, text="Second class", variable=self.travel_class, value=UIClass.SecondClass.value).grid(row=0, column=2, padx=5, sticky=tk.W)
+		self.travel_class = tk.IntVar(value=UIClass.second_class.value)
+		tk.Radiobutton(ticket_options_frame, text="First class", variable=self.travel_class, value=UIClass.first_class.value).grid(row=0, column=1, padx=5, sticky=tk.W)
+		tk.Radiobutton(ticket_options_frame, text="Second class", variable=self.travel_class, value=UIClass.second_class.value).grid(row=0, column=2, padx=5, sticky=tk.W)
 
 		tk.Label(ticket_options_frame, text="Way:").grid(row=1, column=0, padx=5, sticky=tk.W)
-		self.way = tk.IntVar(value=UIWay.OneWay.value)
-		tk.Radiobutton(ticket_options_frame, text="One-way", variable=self.way, value=UIWay.OneWay.value).grid(row=1, column=1, padx=5, sticky=tk.W)
-		tk.Radiobutton(ticket_options_frame, text="Return", variable=self.way, value=UIWay.Return.value).grid(row=1, column=2, padx=5, sticky=tk.W)
+
+		self.way = tk.IntVar(value=UIWay.single_ticket.value)
+		tk.Radiobutton(ticket_options_frame, text="One-way", variable=self.way, value=UIWay.single_ticket.value, command=self.update_checkbox).grid(row=1, column=1, padx=5, sticky=tk.W)
+		tk.Radiobutton(ticket_options_frame, text="Return", variable=self.way, value=UIWay.return_ticket.value, command=self.update_checkbox).grid(row=1, column=2, padx=5, sticky=tk.W)
 
 		tk.Label(ticket_options_frame, text="Discount:").grid(row=2, column=0, padx=5, sticky=tk.W)
-		self.discount = tk.IntVar(value=UIDiscount.NoDiscount.value)
-		tk.Radiobutton(ticket_options_frame, text="No discount", variable=self.discount, value=UIDiscount.NoDiscount.value).grid(row=2, column=1, padx=5, sticky=tk.W)
-		tk.Radiobutton(ticket_options_frame, text="20% discount", variable=self.discount, value=UIDiscount.TwentyDiscount.value).grid(row=2, column=2, padx=5, sticky=tk.W)
-		tk.Radiobutton(ticket_options_frame, text="40% discount", variable=self.discount, value=UIDiscount.FortyDiscount.value).grid(row=2, column=3, padx=5, sticky=tk.W)
+		self.discount = tk.IntVar(value=UIDiscount.no_discount.value)
+		tk.Radiobutton(ticket_options_frame, text="No discount", variable=self.discount, value=UIDiscount.no_discount.value).grid(row=2, column=1, padx=5, sticky=tk.W)
+		tk.Radiobutton(ticket_options_frame, text="20% discount", variable=self.discount, value=UIDiscount.twenty_discount.value).grid(row=2, column=2, padx=5, sticky=tk.W)
+		tk.Radiobutton(ticket_options_frame, text="40% discount", variable=self.discount, value=UIDiscount.forty_discount.value).grid(row=2, column=3, padx=5, sticky=tk.W)
 
-		self.use_different_date = tk.BooleanVar(value=None)
-		tk.Checkbutton(ticket_options_frame, text="I want to use my ticket another date", variable= self.use_different_date, onvalue=True, offvalue=False).grid(row=3, column=0, padx=5, pady=10, sticky=tk.W)
+
+		self.use_different_date = tk.BooleanVar(value=False)
+		self.use_different_date_checkbox = tk.Checkbutton(ticket_options_frame, text="I want to use my ticket another date", variable= self.use_different_date, onvalue=True, offvalue=False, state=tk.DISABLED)
+		self.use_different_date_checkbox.grid(row=3, column=0, padx=5, pady=10, sticky=tk.W)
+		
 		tk.Button(ticket_options_frame, text="Add Ticket", command=self.on_click_add_ticket).grid(row=5, column=0, padx=5, pady=10, sticky=tk.W)
 
 
 		tk.Label(ticket_options_frame, text="Payment:").grid(row=6, column=3, padx=5, sticky=tk.E)
-		self.payment = tk.IntVar(value=UIPayment.Cash.value)
-		tk.Radiobutton(ticket_options_frame, text="Cash", variable=self.payment, value=UIPayment.Cash.value).grid(row=6, column=4, padx=5, sticky=tk.W)
-		tk.Radiobutton(ticket_options_frame, text="Credit Card", variable=self.payment, value=UIPayment.CreditCard.value).grid(row=6, column=5, padx=5, sticky=tk.W)
-		tk.Radiobutton(ticket_options_frame, text="Debit Card", variable=self.payment, value=UIPayment.DebitCard.value).grid(row=6, column=6, padx=5, sticky=tk.W)
+		self.payment = tk.IntVar(value=UIPayment.cash.value)
+		tk.Radiobutton(ticket_options_frame, text="Cash", variable=self.payment, value=UIPayment.cash.value).grid(row=6, column=4, padx=5, sticky=tk.W)
+		tk.Radiobutton(ticket_options_frame, text="Credit Card", variable=self.payment, value=UIPayment.credit_card.value).grid(row=6, column=5, padx=5, sticky=tk.W)
+		tk.Radiobutton(ticket_options_frame, text="Debit Card", variable=self.payment, value=UIPayment.debit_card.value).grid(row=6, column=6, padx=5, sticky=tk.W)
 
 
-		self.ticket_price_label = tk.Label(self.master, text=f"Total price: {self.sale.total_price}")
-		self.ticket_price_label.pack(side=tk.RIGHT, ipadx=10, padx=10, pady=10)
+		tk.Button(self.master, text="Pay", command=self.on_click_pay, width=20, height=5).pack(side=tk.RIGHT, ipadx=10, padx=10, pady=1, anchor='se')
+		self.ticket_price_label = tk.Label(self.master, text=f"€{self.sale.total_price}", font=("Arial", 25))
+		self.ticket_price_label.pack(side=tk.RIGHT, ipadx=10, padx=10, pady=1, anchor='se')
 
-		# Create a canvas
+
 		self.canvas = tk.Canvas(self.master)
 		self.canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
-		# Add a scrollbar to the canvas
-		scrollbar = tk.Scrollbar(self.master, orient="vertical", command=self.canvas.yview)
+		self.scrollbar_frame = tk.Frame(self.master)
+		self.scrollbar_frame.pack(side=tk.LEFT, fill='y')
+
+		scrollbar = tk.Scrollbar(self.scrollbar_frame, orient="vertical", command=self.canvas.yview)
 		scrollbar.pack(side=tk.LEFT, fill='y')
 
-		# Configure the canvas to work with the scrollbar
 		self.canvas.configure(yscrollcommand=scrollbar.set)
 		self.canvas.bind('<Configure>', lambda e: self.canvas.configure(scrollregion=self.canvas.bbox("all")))
 
-		# Create a frame inside the canvas to hold the tickets
 		self.ticket_frame = tk.Frame(self.canvas)
 		self.canvas.create_window((0, 0), window=self.ticket_frame, anchor="nw")
+
+		# Initially hide the scrollbar
+		self.scrollbar_frame.pack_forget()
 	
-		tk.Button(self.master, text="Pay", command=self.on_click_pay).pack(side=tk.BOTTOM, ipadx=10, padx=10, pady=10)
 
 		self.pack(fill=tk.BOTH, expand=1)
 
@@ -91,6 +99,12 @@ class UI(tk.Frame):
 	def on_click_pay(self):
 		Sale.handle_payment(self.sale.total_price, self.payment.get())
 
+	def update_checkbox(self):
+		if self.way.get() == UIWay.return_ticket.value:
+			self.use_different_date.set(False)
+			self.use_different_date_checkbox.config(state=tk.DISABLED)
+		else:
+			self.use_different_date_checkbox.config(state=tk.NORMAL)
 
 	def spawn_ticket_in_ui(self, ticket: Ticket):
 		ticket_frame = tk.Frame(self.ticket_frame)
@@ -104,6 +118,11 @@ class UI(tk.Frame):
 		delete_button.pack(side=tk.RIGHT)
 		self.ticket_price_label.config(text=f"Total price: {self.sale.total_price}")
 
+		if self.ticket_frame.winfo_height() > self.canvas.winfo_height():
+			self.scrollbar_frame.pack()
+		else:
+			self.scrollbar_frame.pack_forget()
+
 
 	def on_click_add_ticket(self):
 		ticket = self.sale.create_ticket()
@@ -112,8 +131,7 @@ class UI(tk.Frame):
 
 
 	def on_click_delete_ticket(self, ticket_frame, ticket):
-		self.sale.tickets.remove(ticket)
-		self.sale.total_price -= ticket.price
+		self.sale.delete_ticket_from_total(ticket)
 		ticket_frame.destroy()
 		self.ticket_price_label.config(text=f"Total price: {self.sale.total_price}")
 
@@ -125,10 +143,10 @@ class UI(tk.Frame):
 
 def main():
 	root = tk.Tk()
+	root.attributes('-fullscreen', True)
 	UI(root)
 	root.mainloop()
 
 if __name__ == '__main__':
 	main()
 
-#TODO: Niet van dezelfde locatie naar dezelfde locatie gaan

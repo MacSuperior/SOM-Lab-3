@@ -24,5 +24,5 @@ class Ticket:
         if origin is not None and destination is not None:
             self.price = TicketPriceCalculator.get_price(self)
         
-        if self.journey_type == UIWay.Return or use_different_date is False:
+        if self.journey_type == UIWay.return_ticket or use_different_date is False:
             self.valid_date = datetime.today().strftime("%Y/%m/%d")

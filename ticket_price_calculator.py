@@ -17,7 +17,7 @@ class TicketPriceCalculator:
         price = price['Price'].values[0]
         price =  round(price * 0.02 * tariefeenheden, 2)
 
-        if ticket.journey_type == UIWay.Return:
+        if ticket.journey_type == UIWay.return_ticket:
             price *= 2
 
         return price
