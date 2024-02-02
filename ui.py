@@ -1,10 +1,8 @@
-from tariefeenheden import Tariefeenheden
 import tkinter as tk
-from ui_info import UIPayment, UIClass, UIWay, UIDiscount, UIPayment, UIInfo
-from ticket import Ticket
-from payment import Payment
-from ticket_price_calculator import TicketPriceCalculator
 from sale import Sale
+from ticket import Ticket
+from tariefeenheden import Tariefeenheden
+from ui_info import UIPayment, UIClass, UIWay, UIDiscount, UIPayment, UIInfo
 
 class UI(tk.Frame):
 
@@ -49,8 +47,9 @@ class UI(tk.Frame):
 		tk.Radiobutton(ticket_options_frame, text="One-way", variable=self.way, value=UIWay.OneWay.value).grid(row=1, column=1, padx=5, sticky=tk.W)
 		tk.Radiobutton(ticket_options_frame, text="Return", variable=self.way, value=UIWay.Return.value).grid(row=1, column=2, padx=5, sticky=tk.W)
 
+		self.use_different_date = tk.BooleanVar(value=None)
 		tk.Label(ticket_options_frame, text="Travel Date").grid(row=1, column=0, padx=5, sticky=tk.W)
-		self.date = ...
+		tk.Checkbutton(self.master, text="I want to use my ticket another date", variable= self.use_different_date, onvalue=True, offvalue=False).pack()
 		
 
 		tk.Label(ticket_options_frame, text="Discount:").grid(row=2, column=0, padx=5, sticky=tk.W)
@@ -69,6 +68,7 @@ class UI(tk.Frame):
 		tk.Radiobutton(payment_frame, text="Debit Card", variable=self.payment, value=UIPayment.DebitCard.value).grid(row=0, column=3, padx=5, sticky=tk.W)
 
 		tk.Button(self.master, text="Add Ticket", command=self.on_click_add_ticket).pack(side=tk.LEFT, ipadx=10, padx=10, pady=10)
+
 		self.ticket_price_label = tk.Label(self.master, text=f"Total price: {self.total_price}")
 		self.ticket_price_label.pack(side=tk.RIGHT, ipadx=10, padx=10, pady=10)
 
@@ -76,19 +76,21 @@ class UI(tk.Frame):
 
 		self.pack(fill=tk.BOTH, expand=1)
 
+
 	def on_click_pay(self):
 		Sale.handle_payment(self.total_price, self.payment.get())
-	
+
 	def create_ticket(self):
 		return Ticket(origin=self.from_station.get(),
 				  		destination=self.to_station.get(),
 						travel_class=self.travel_class.get(),
 						journey_type=self.way.get(),
-						valid_date=0,
-						price=0,
-						discount=self.discount.get())
+						valid_date=None,
+						price=None,
+						discount=self.discount.get(),
+						use_different_date=self.use_different_date.get())
 
-	def spawn_ticket(self, ticket: Ticket):
+	def spawn_ticket_in_ui(self, ticket: Ticket):
 		ticket_frame = tk.Frame(self.master)
 		ticket_frame.pack()
 
@@ -98,35 +100,27 @@ class UI(tk.Frame):
 
 		delete_button = tk.Button(ticket_frame, text="Delete", command=lambda frame=ticket_frame: self.on_click_delete_ticket(frame, ticket))
 		delete_button.pack(side=tk.RIGHT)
+		self.ticket_price_label.config(text=f"Total price: {self.total_price}")
+
 
 	def add_ticket_to_total(self, ticket: Ticket):
 		self.total_price += ticket.price
 		self.total_price = round(self.total_price, 2)
 		self.tickets.append(ticket)
 
+
 	def on_click_add_ticket(self):
 		ticket = self.create_ticket()
-		ticket.price =  TicketPriceCalculator.get_price(ticket)
 		self.add_ticket_to_total(ticket)
-		self.spawn_ticket(ticket)
-
-		self.ticket_price_label.config(text=f"Total price: {self.total_price}")
+		self.spawn_ticket_in_ui(ticket)
 
 
 	def on_click_delete_ticket(self, ticket_frame, ticket):
 		self.tickets.remove(ticket)
 		self.total_price -= ticket.price
 		ticket_frame.destroy()
-
 		self.ticket_price_label.config(text=f"Total price: {self.total_price}")
 
-	def get_ui_info(self) -> UIInfo:
-		return UIInfo(from_station=self.from_station.get(),
-			to_station=self.to_station.get(),
-			travel_class=self.travel_class.get(),
-			way=self.way.get(),
-			discount=self.discount.get(),
-			payment=self.payment.get())
 
 	def on_exit(self):
 		self.quit()
@@ -141,4 +135,4 @@ def main():
 if __name__ == '__main__':
 	main()
 
-#TODO: Add date to ticket
+#TODO: Niet van dezelfde locatie naar dezelfde locatie gaan

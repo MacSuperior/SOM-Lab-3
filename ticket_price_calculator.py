@@ -1,5 +1,4 @@
 import pandas as pd
-from ticket import Ticket
 from tariefeenheden import Tariefeenheden
 from ui_info import UIWay
 
@@ -10,7 +9,7 @@ class TicketPriceCalculator:
         return pd.read_pickle("ticket_pricing.pkl")
 
     @staticmethod
-    def get_price(ticket: Ticket):
+    def get_price(ticket):
         tariefeenheden = Tariefeenheden.get_tariefeenheden(ticket.origin, ticket.destination)
         df = TicketPriceCalculator._get_pricing_df()
 
